@@ -70,10 +70,14 @@ class DynamoTable3(object):
     def get_resource(cls, **kwargs):
         """Return the boto3 dynamodb resource, create it if it doesn't exist
 
+        :param boto3.session.Session() session: If set, create a dynamodb resource from the session.
+
         The resource is stored globally on the ``DynamoTable3`` class and is shared between all models. To influence
         the connection parameters you just need to call ``get_resource`` on any model with the correct kwargs BEFORE you
         use any of the models.
         """
+        if 'session' in kwargs:
+            DynamoTable3._resource = kwargs['session'].resource('dynamodb')
         if DynamoTable3._resource is None:
             DynamoTable3._resource = boto3.resource('dynamodb', **kwargs)
         return DynamoTable3._resource
